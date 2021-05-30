@@ -3,9 +3,11 @@ package fixed_test
 import (
 	"bytes"
 	"encoding/json"
-	. "github.com/robaho/fixed"
 	"math"
 	"testing"
+
+	"github.com/robaho/fixed"
+	. "github.com/robaho/fixed"
 )
 
 func TestBasic(t *testing.T) {
@@ -48,6 +50,14 @@ func TestParse(t *testing.T) {
 	}
 	_, err = Parse("abc")
 	if err == nil {
+		t.Fail()
+	}
+}
+
+func TestTruncate(t *testing.T) {
+	fix := fixed.NewS("1.3215")
+	fix = fix.Truncate(3)
+	if !fix.Equal(fixed.NewF(1.321)) {
 		t.Fail()
 	}
 }

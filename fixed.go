@@ -162,6 +162,17 @@ func (f Fixed) Sign() int {
 	return f.Cmp(ZERO)
 }
 
+func (f Fixed) Truncate(precision int32) Fixed {
+	if precision > nPlaces || precision < 0 {
+		return f
+	}
+	i := f.fp / scale
+	fp := f.fp % scale
+	sub := fp % int64(math.Pow(10, float64(nPlaces-precision)))
+	fp -= sub
+	return Fixed{fp: (i*scale + fp)}
+}
+
 // Float converts the Fixed to a float64
 func (f Fixed) Float() float64 {
 	if f.IsNaN() {
@@ -453,7 +464,6 @@ func (f Fixed) MarshalJSON() ([]byte, error) {
 
 // Value implements the driver.Valuer interface for database serialization.
 func (f Fixed) Value() (driver.Value, error) {
-	fmt.Println(">>>>>>>>> value")
 	return f.String(), nil
 }
 
