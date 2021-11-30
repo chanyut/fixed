@@ -29,7 +29,14 @@ const MAX = float64(99999999999.9999999)
 const nan = int64(1<<63 - 1)
 
 var NaN = Fixed{fp: nan}
-var ZERO = Fixed{fp: 0}
+var Zero = Fixed{fp: 0}
+var Max = NewF(MAX)
+
+func (f *Fixed) Zero() { f = &Fixed{fp: 0} }
+func (f *Fixed) Max() {
+	_f := NewF(MAX)
+	f = &_f
+}
 
 var errTooLarge = errors.New("significand too large")
 var errFormat = errors.New("invalid encoding")
@@ -146,7 +153,7 @@ func (f Fixed) IsNaN() bool {
 }
 
 func (f Fixed) IsZero() bool {
-	return f.Equal(ZERO)
+	return f.Equal(Zero)
 }
 
 // Sign returns:
@@ -159,7 +166,7 @@ func (f Fixed) Sign() int {
 	if f.IsNaN() {
 		return 0
 	}
-	return f.Cmp(ZERO)
+	return f.Cmp(Zero)
 }
 
 func (f Fixed) Truncate(precision int32) Fixed {
